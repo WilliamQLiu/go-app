@@ -1,19 +1,16 @@
 # Start from a Debian image with the latest version of Go installed
-# and aworkspace (GOPATH) configured at /go.
-FROM golang
+# and a workspace (GOPATH) configured at /go.
+FROM golang:1.8
 
-# Copy the local package files to the container's workspace.
-ADD . /go/src/github.com/williamqliu/go-app/goweb
+WORKDIR home/will/go/src/github.com/williamqliu/go-app/goweb
+RUN mkdir /myapp
+COPY . /myapp
 
 # Build the go-app command inside the container
 # (You may fetch or manage dependencies here,
 # either manually or with a tool like "godep".)
-RUN go install github.com/williamqliu/go-app/goweb
-
-# RUN the go-app command by default when the container starts.
-ENTRYPOINT /go/bin/goweb
+ENTRYPOINT ["/myapp/goweb"]
 
 # Document that the service listens on port 8080.
 EXPOSE 8080
-
 

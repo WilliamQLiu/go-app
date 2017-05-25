@@ -10,6 +10,7 @@ import (
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there")
+	log.Println("Log: handler request")
 }
 
 func main() {
