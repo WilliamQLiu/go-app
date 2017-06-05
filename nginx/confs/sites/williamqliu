@@ -1,5 +1,6 @@
 upstream go-backend{
-    server goweb:8080;
+    #server goweb:8080;
+    server localhost:8080;
     keepalive 60;
 }
 
