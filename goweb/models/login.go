@@ -19,8 +19,9 @@ type loginResource struct{}
 func (rs loginResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/", rs.New)     // Prompt to create login for new users
-	r.Post("/", rs.Create) // POST to create a new user
+	r.Get("/", rs.New)                     // Prompt to create login for new users
+	r.Post("/", rs.Create)                 // POST to create a new user
+	r.With(paginate).Get("/list", rs.List) // GET list of existing users
 
 	return r
 }
@@ -57,6 +58,18 @@ func (rs loginResource) Create(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("username:", username)
 	fmt.Println("password:", password)
-	log.Println("Log: loginResource Create route")
 
+}
+
+func paginate(next http.Handler) http.Handler {
+	fmt.Println("TODO: Paginate")
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// just a stub.. some ideas are to look at URL query params for something like
+		// the page number, or the limit, and send a query cursor down the chain
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (rs loginResource) List(w http.ResponseWriter, r *http.Request) {
+	log.Println("Log: loginResource List route")
 }

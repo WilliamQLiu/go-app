@@ -3,13 +3,22 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"html/template"
 	"log"
 	"net/http"
 	"strings"
 
 	"github.com/pressly/chi"
+	"github.com/williamqliu/go-app/models"
+)
+
+const (
+	DB_USER     = "postgres"
+	DB_PASSWORD = "postgres"
+	DB_NAME     = "goappdb"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,11 +49,16 @@ func main() {
 	r := chi.NewRouter()
 	r.Get("/", indexHandler)
 	r.Get("/hello/", helloHandler)
-
 	r.Mount("/login", loginResource{}.Routes())
 
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func checkErr(err error) {
+	if err != nil {
+		panic(err) // panic stops ordinary flow of control and begins panicking (program crashes)
 	}
 }
