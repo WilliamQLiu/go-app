@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -33,29 +32,14 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Log: helloHandler request")
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "GET" {
-		t, _ := template.ParseFiles("templates/login.gtpl")
-		t.Execute(w, nil)
-		log.Println("Log: loginHandler GET request")
-	} else if r.Method == "POST" {
-		r.ParseForm()
-		fmt.Println("username:", r.Form["username"])
-		fmt.Println("password:", r.Form["password"])
-		log.Println("Log: loginHandler POST request")
-	} else {
-		fmt.Fprintf(w, "Method type not supposed")
-	}
-}
-
 func main() {
 	log.Println("Log: main app is running")
 
 	r := chi.NewRouter()
 	r.Get("/", indexHandler)
 	r.Get("/hello/", helloHandler)
-	r.Get("/login/", loginHandler)
-	r.Post("/login/", loginHandler)
+
+	r.Mount("/login", loginResource{}.Routes())
 
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {
