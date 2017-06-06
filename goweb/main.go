@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/pressly/chi"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +35,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("login.gtpl")
+		t, _ := template.ParseFiles("templates/login.gtpl")
 		t.Execute(w, nil)
 		log.Println("Log: loginHandler GET request")
 	} else if r.Method == "POST" {
@@ -48,10 +50,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	log.Println("Log: main app is running")
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/hello/", helloHandler)
-	http.HandleFunc("/login/", loginHandler)
-	err := http.ListenAndServe(":8080", nil)
+
+	r := chi.NewRouter()
+	r.Get("/", indexHandler)
+	r.Get("/hello/", helloHandler)
+	r.Get("/login/", loginHandler)
+	r.Post("/login/", loginHandler)
+
+	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		log.Fatal(err)
 	}
