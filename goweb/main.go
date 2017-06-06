@@ -21,6 +21,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()                       // parse arguments, e.g. /hello/?url_long=111&url_long=222
 	fmt.Println("path", r.URL.Path)     // `/hello/`
 	fmt.Println("scheme", r.URL.Scheme) // scheme
+	fmt.Println("method", r.Method)     // method GET
 	fmt.Println(r.Form["url_long"])     // [111 222]
 	for k, v := range r.Form {
 		fmt.Println("key:", k)                    // key: url_long
