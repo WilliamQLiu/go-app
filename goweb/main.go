@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -12,7 +13,8 @@ import (
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I'm Will.")
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, nil)
 	log.Println("Log: indexHandler request")
 }
 
