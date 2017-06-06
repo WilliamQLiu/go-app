@@ -41,6 +41,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("username:", r.Form["username"])
 		fmt.Println("password:", r.Form["password"])
 		log.Println("Log: loginHandler POST request")
+	} else {
+		fmt.Fprintf(w, "Method type not supposed")
 	}
 }
 
