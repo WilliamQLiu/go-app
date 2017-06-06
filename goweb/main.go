@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/pressly/chi"
-	"github.com/williamqliu/go-app/models"
 )
 
 const (
@@ -46,10 +45,18 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.Println("Log: main app is running")
 
+	// Setup DB
+	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+		DB_USER, DB_PASSWORD, DB_NAME)
+	db, dberr := sql.Open("postgres", dbinfo)
+	checkErr(dberr)
+
+	defer db.Close() // defer execution of closing DB until after surround function (main) closes
+
 	r := chi.NewRouter()
 	r.Get("/", indexHandler)
 	r.Get("/hello/", helloHandler)
-	r.Mount("/login", loginResource{}.Routes())
+	r.Mount("/login", LoginResource{}.Routes())
 
 	err := http.ListenAndServe(":8080", r)
 	if err != nil {

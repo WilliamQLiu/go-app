@@ -13,10 +13,10 @@ import (
 	"github.com/pressly/chi"
 )
 
-type loginResource struct{}
+type LoginResource struct{}
 
 // Routes creats a REST router for the login resource
-func (rs loginResource) Routes() chi.Router {
+func (rs LoginResource) Routes() chi.Router {
 	r := chi.NewRouter()
 
 	r.Get("/", rs.New)                     // Prompt to create login for new users
@@ -26,7 +26,7 @@ func (rs loginResource) Routes() chi.Router {
 	return r
 }
 
-func (rs loginResource) New(w http.ResponseWriter, r *http.Request) {
+func (rs LoginResource) New(w http.ResponseWriter, r *http.Request) {
 	crutime := time.Now().Unix()
 	hash := md5.New()
 	io.WriteString(hash, strconv.FormatInt(crutime, 10))
@@ -34,10 +34,10 @@ func (rs loginResource) New(w http.ResponseWriter, r *http.Request) {
 
 	t, _ := template.ParseFiles("templates/login.gtpl")
 	t.Execute(w, token) // pass token object to template
-	log.Println("Log: loginResource New route")
+	log.Println("Log: LoginResource New route")
 }
 
-func (rs loginResource) Create(w http.ResponseWriter, r *http.Request) {
+func (rs LoginResource) Create(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	token := r.Form.Get("token")
@@ -70,6 +70,6 @@ func paginate(next http.Handler) http.Handler {
 	})
 }
 
-func (rs loginResource) List(w http.ResponseWriter, r *http.Request) {
-	log.Println("Log: loginResource List route")
+func (rs LoginResource) List(w http.ResponseWriter, r *http.Request) {
+	log.Println("Log: LoginResource List route")
 }
