@@ -99,7 +99,7 @@ func TestCreateUser(t *testing.T) {
 
 	payload := []byte(`{"emailaddress":"testuser@williamqliu.com", "password": "test12345"}`)
 
-	req, _ := http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest("POST", "/users", bytes.NewBuffer(payload))
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusCreated, response.Code)
