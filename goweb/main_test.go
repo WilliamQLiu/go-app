@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/williamqliu/go-app/goweb"
@@ -94,7 +95,7 @@ func TestGetNonExistentUser(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	// Create a user, returns 201
+	// Create a user, returns 201 and right key-values in response body payload
 	clearTable()
 
 	payload := []byte(`{"emailaddress":"testuser@williamqliu.com", "password": "test12345"}`)
@@ -114,4 +115,79 @@ func TestCreateUser(t *testing.T) {
 	if m["password"] != "test12345" {
 		t.Errorf("Expected user password to be 'test12345'. Got '%v'", m["password"])
 	}
+}
+
+func addUser(count int) {
+	// Add one or more records into the table for testing
+	if count < 1 {
+		count = 1
+	}
+
+	for i := 0; i < count; i++ {
+		app.DB.Exec("INSERT INTO users(id, emailaddress, password) VALUES($1, $2, $3)", strconv.Itoa(i), "testuser@williamqliu.com", "test12345")
+	}
+}
+
+func TestGetUser(t *testing.T) {
+	// Add a User and tests retrieving user returns 200 OK
+	clearTable()
+
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/users/1", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+}
+
+func TestUpdateUser(t *testing.T) {
+	// Update an existing User data
+	clearTable()
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/users/1", nil)
+	response := executeRequest(req)
+
+	var originalUser map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &originalUser)
+
+	payload := []byte(`{"emailaddress":"newtestuser@williamqliu.com", "password": "newtest12345"}`)
+
+	req, _ = http.NewRequest("PUT", "/users/1", bytes.NewBuffer(payload))
+	response = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if m["id"] != originalUser["id"] {
+		t.Errorf("Expected the id to remain the same (%v). Got %v", originalUser["id"], m["id"])
+	}
+
+	if m["emailaddress"] == originalUser["emailaddress"] {
+		t.Errorf("Expected the emailaddress to change from '%v' to '%v'. Got '%v'", originalUser["emailaddress"], m["emailaddress"], m["emailaddress"])
+	}
+
+	if m["password"] == originalUser["password"] {
+		t.Errorf("Expected the password to change from '%v' to '%v'. Got '%v'", originalUser["password"], m["password"], m["password"])
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	clearTable()
+	addUser(1)
+
+	req, _ := http.NewRequest("GET", "/users/1", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	req, _ = http.NewRequest("DELETE", "/users/1", nil)
+	response = executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	req, _ = http.NewRequest("GET", "/users/1", nil)
+	response = executeRequest(req)
+	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
