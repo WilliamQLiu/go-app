@@ -1,6 +1,8 @@
 package main_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -72,5 +74,44 @@ func TestEmptyTable(t *testing.T) {
 
 	if body := response.Body.String(); body != "[]" {
 		t.Errorf("Expected an empty array. Got %s", body)
+	}
+}
+
+func TestGetNonExistentUser(t *testing.T) {
+	// Get an nonexistent user, check for 404 Not Found and contains error message
+	clearTable()
+
+	req, _ := http.NewRequest("GET", "/user/999999", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusNotFound, response.Code)
+
+	var m map[string]string
+	json.Unmarshal(response.Body.Bytes(), &m)
+	if m["error"] != "User not found" {
+		t.Errorf("Expected the 'error' key of the response to be set to 'User not found'. Got '%s'", m["error"])
+	}
+}
+
+func TestCreateUser(t *testing.T) {
+	// Create a user, returns 201
+	clearTable()
+
+	payload := []byte(`{"emailaddress":"testuser@williamqliu.com", "password": "test12345"}`)
+
+	req, _ := http.NewRequest("POST", "/user", bytes.NewBuffer(payload))
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusCreated, response.Code)
+
+	var m map[string]interface{}
+	json.Unmarshal(response.Body.Bytes(), &m)
+
+	if m["emailaddress"] != "testuser@williamqliu.com" {
+		t.Errorf("Expected user name to be 'testuser@williamqliu.com'. Got '%v'", m["emailaddress"])
+	}
+
+	if m["password"] != "test12345" {
+		t.Errorf("Expected user password to be 'test12345'. Got '%v'", m["password"])
 	}
 }
