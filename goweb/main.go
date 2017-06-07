@@ -17,7 +17,7 @@ import (
 const (
 	DB_USER     = "postgres"
 	DB_PASSWORD = "postgres"
-	DB_NAME     = "goappdb"
+	DB_NAME     = "postgres"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {

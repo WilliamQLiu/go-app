@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/md5"
+	"database/sql"
 	"fmt"
 	"html/template"
 	"io"
@@ -14,6 +15,13 @@ import (
 )
 
 type LoginResource struct{}
+
+type User struct {
+	emailaddress string
+	password     string
+}
+
+var db *sql.DB
 
 // Routes creats a REST router for the login resource
 func (rs LoginResource) Routes() chi.Router {
@@ -72,4 +80,13 @@ func paginate(next http.Handler) http.Handler {
 
 func (rs LoginResource) List(w http.ResponseWriter, r *http.Request) {
 	log.Println("Log: LoginResource List route")
+
+	rows, err := db.Query("SELECT * FROM users;")
+
+	if err != nil {
+		fmt.Println("Error with DB")
+		log.Fatal(err)
+	}
+
+	defer rows.Close()
 }
