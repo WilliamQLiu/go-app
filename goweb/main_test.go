@@ -2,6 +2,8 @@ package main_test
 
 import (
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -42,4 +44,33 @@ func ensureTableExists() {
 func clearTable() {
 	app.DB.Exec("DELETE FROM users")
 	//app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+}
+
+func executeRequest(req *http.Request) *httptest.ResponseRecorder {
+	// Executes the request using the application's router and returns response
+	responseRecorder := httptest.NewRecorder()
+	app.Router.ServeHTTP(responseRecorder, req)
+
+	return responseRecorder
+}
+
+func checkResponseCode(t *testing.T, expected, actual int) {
+	// Compares response code
+	if expected != actual {
+		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
+	}
+}
+
+func TestEmptyTable(t *testing.T) {
+	// Deletes all records from 'users' table, send GET request to /users endpoint
+	clearTable()
+
+	req, _ := http.NewRequest("GET", "/users", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	if body := response.Body.String(); body != "[]" {
+		t.Errorf("Expected an empty array. Got %s", body)
+	}
 }
