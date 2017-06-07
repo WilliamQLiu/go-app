@@ -3,19 +3,18 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 	"html/template"
 	"log"
 	"net/http"
+	//"os"
 	"strings"
-
-	"github.com/pressly/chi"
+	//"github.com/pressly/chi"
 )
 
 const (
-	DB_USER     = "postgres"
+	DB_USERNAME = "postgres"
 	DB_PASSWORD = "postgres"
 	DB_NAME     = "postgres"
 )
@@ -45,23 +44,27 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	log.Println("Log: main app is running")
 
+	a := App{}
+	a.InitializeDB(DB_USERNAME, DB_PASSWORD, DB_NAME)
+	a.Run(":8080")
+
 	// Setup DB
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		DB_USER, DB_PASSWORD, DB_NAME)
-	db, dberr := sql.Open("postgres", dbinfo)
-	checkErr(dberr)
+	//dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
+	//	DB_USER, DB_PASSWORD, DB_NAME)
+	//db, dberr := sql.Open("postgres", dbinfo)
+	//checkErr(dberr)
 
-	defer db.Close() // defer execution of closing DB until after surround function (main) closes
+	//defer db.Close() // defer execution of closing DB until after surround function (main) closes
 
-	r := chi.NewRouter()
-	r.Get("/", indexHandler)
-	r.Get("/hello/", helloHandler)
-	r.Mount("/login", LoginResource{}.Routes())
+	//r := chi.NewRouter()
+	//r.Get("/", indexHandler)
+	//r.Get("/hello/", helloHandler)
+	//r.Mount("/login", LoginResource{}.Routes())
 
-	err := http.ListenAndServe(":8080", r)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//err := http.ListenAndServe(":8080", r)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 }
 
 func checkErr(err error) {
