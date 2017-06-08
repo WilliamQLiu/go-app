@@ -82,7 +82,7 @@ func TestGetNonExistentUser(t *testing.T) {
 	// Get an nonexistent user, check for 404 Not Found and contains error message
 	clearTable()
 
-	req, _ := http.NewRequest("GET", "/user/999999", nil)
+	req, _ := http.NewRequest("GET", "/users/999999", nil)
 	response := executeRequest(req)
 
 	checkResponseCode(t, http.StatusNotFound, response.Code)
