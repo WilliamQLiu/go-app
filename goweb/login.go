@@ -11,34 +11,60 @@ import (
 	//"strconv"
 	//"time"
 	//"github.com/pressly/chi"
-	"errors"
+	//"errors"
 )
 
 //type LoginResource struct{}
 
 type user struct {
+	ID           int    `json:"id"`
 	Emailaddress string `json:"emailaddress"`
 	Password     string `json:"password"`
 }
 
 func (u *user) getUser(db *sql.DB) error {
-	return errors.New("Not implemented")
+	return db.QueryRow("SELECT emailaddress, password FROM users WHERE id=$1", u.ID).Scan(&u.Emailaddress, &u.Password)
 }
 
 func (u *user) updateUser(db *sql.DB) error {
-	return errors.New("Not implemented")
+	_, err := db.Exec("UPDATE users SET emailaddress=$1, password=$2 WHERE id=$3", u.Emailaddress, u.Password, u.ID)
+	return err
 }
 
 func (u *user) deleteUser(db *sql.DB) error {
-	return errors.New("Not implemented")
+	_, err := db.Exec("DELETE FROM users WHERE id=$1", u.ID)
+	return err
 }
 
 func (u *user) createUser(db *sql.DB) error {
-	return errors.New("Not implemented")
+	err := db.QueryRow(
+		"INSERT INTO users(emailaddress, password) VALUES($1, $2) RETURNING id", u.Emailaddress, u.Password).Scan(&u.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func getUsers(db *sql.DB, start, count int) ([]user, error) {
-	return nil, errors.New("Not implemented")
+	rows, err := db.Query(
+		"SELECT id, emailaddress, password FROM users LIMIT $1 OFFSET $2", count, start)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	users := []user{}
+
+	for rows.Next() {
+		var u user
+		if err := rows.Scan(&u.ID, &u.Emailaddress, &u.Password); err != nil {
+			return nil, err
+		}
+		users = append(users, u)
+	}
+	return users, nil
 }
 
 //var db *sql.DB
