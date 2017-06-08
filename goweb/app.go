@@ -4,20 +4,21 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq" // _ means to import only for its side-effects (initialization)
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq" // _ means to import only for its side-effects (initialization)
 )
 
-// struct to expose references to the router and database
+// App : struct to expose references to the router and database
 type App struct {
 	Router *mux.Router
 	DB     *sql.DB
 }
 
-// func to initialize database
+// InitializeDB : func to initialize database with connection info
 func (app *App) InitializeDB(user, password, dbname string) {
 	connectionString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
 
@@ -28,10 +29,43 @@ func (app *App) InitializeDB(user, password, dbname string) {
 	}
 
 	app.Router = mux.NewRouter()
+	app.initializeRoutes()
 }
 
-// func to run the application
-func (app *App) Run(addr string) {}
+// Run : func to start the main application
+func (app *App) Run(addr string) {
+	log.Fatal(http.ListenAndServe(":8080", app.Router))
+}
+
+// initializeRoutes : func to initialize routes
+func (app *App) initializeRoutes() {
+	app.Router.HandleFunc("/users", app.getUsers).Methods("GET")
+	app.Router.HandleFunc("/users", app.createUser).Methods("POST")
+	app.Router.HandleFunc("/users/{id:[0-9]+}", app.getUser).Methods("GET")
+	app.Router.HandleFunc("/users/{id:[0-9]+}", app.updateUser).Methods("PUT")
+	app.Router.HandleFunc("/users/{id:[0-9]+}", app.deleteUser).Methods("DELETE")
+}
+
+func (app *App) getUsers(w http.ResponseWriter, r *http.Request) {
+	// Get a list of Users
+	count, _ := strconv.Atoi(r.FormValue("count"))
+	start, _ := strconv.Atoi(r.FormValue("start"))
+
+	if count > 10 || count < 1 {
+		count = 10
+	}
+	if start < 0 {
+		start = 0
+	}
+
+	users, err := getUsers(app.DB, start, count)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, users)
+}
 
 func (app *App) getUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

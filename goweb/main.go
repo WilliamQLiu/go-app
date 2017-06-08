@@ -4,19 +4,20 @@ package main
 
 import (
 	"fmt"
-	_ "github.com/lib/pq"
 	"html/template"
 	"log"
 	"net/http"
+
+	_ "github.com/lib/pq"
 	//"os"
 	"strings"
 	//"github.com/pressly/chi"
 )
 
 const (
-	DB_USERNAME = "postgres"
-	DB_PASSWORD = "postgres"
-	DB_NAME     = "postgres"
+	dbUsername = "postgres"
+	dbPassword = "postgres"
+	dbName     = "postgres"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,12 +46,12 @@ func main() {
 	log.Println("Log: main app is running")
 
 	a := App{}
-	a.InitializeDB(DB_USERNAME, DB_PASSWORD, DB_NAME)
+	a.InitializeDB(dbUsername, dbPassword, dbName)
 	a.Run(":8080")
 
 	// Setup DB
 	//dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-	//	DB_USER, DB_PASSWORD, DB_NAME)
+	//	DB_USER, dbPassword, dbName)
 	//db, dberr := sql.Open("postgres", dbinfo)
 	//checkErr(dberr)
 
