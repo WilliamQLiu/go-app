@@ -1,4 +1,4 @@
-package main
+package main_test
 
 import (
 	"bytes"
@@ -9,6 +9,8 @@ import (
 	"os"
 	"strconv"
 	"testing"
+
+	"github.com/williamqliu/go-app/goweb"
 )
 
 var app main.App
