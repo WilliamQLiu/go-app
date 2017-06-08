@@ -1,4 +1,4 @@
-package main_test
+package main
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ var app main.App
 
 func TestMain(m *testing.M) {
 	app = main.App{}
-	app.InitializeDB(
+	app.Initialize(
 		"postgres", // dbUsername
 		"postgres", // dbPassword
 		"postgres") // dbName

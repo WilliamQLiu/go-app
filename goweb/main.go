@@ -23,9 +23,9 @@ const (
 func main() {
 	log.Println("Log: main app is running")
 
-	a := App{}
-	a.InitializeDB(dbUsername, dbPassword, dbName)
-	a.Run(":8080")
+	app := App{}
+	app.Initialize(dbUsername, dbPassword, dbName)
+	app.Run(":8080")
 
 	// Setup DB
 	//dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",

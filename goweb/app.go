@@ -20,8 +20,8 @@ type App struct {
 	DB     *sql.DB
 }
 
-// InitializeDB : func to initialize database with connection info
-func (app *App) InitializeDB(user, password, dbname string) {
+// Initialize : func to initialize database with connection info, add routes
+func (app *App) Initialize(user, password, dbname string) {
 	connectionString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
 
 	var err error
