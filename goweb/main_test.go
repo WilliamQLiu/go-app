@@ -9,8 +9,6 @@ import (
 	"os"
 	"strconv"
 	"testing"
-
-	"github.com/williamqliu/go-app/goweb"
 )
 
 var app main.App
@@ -18,9 +16,9 @@ var app main.App
 func TestMain(m *testing.M) {
 	app = main.App{}
 	app.InitializeDB(
-		"postgres", // DB_Username
-		"postgres", // DB_Password
-		"postgres") // DB_Name
+		"postgres", // dbUsername
+		"postgres", // dbPassword
+		"postgres") // dbName
 
 	ensureTableExists()
 

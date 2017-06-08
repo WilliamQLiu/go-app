@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq" // _ means to import only for its side-effects (initialization)
@@ -39,11 +41,35 @@ func (app *App) Run(addr string) {
 
 // initializeRoutes : func to initialize routes
 func (app *App) initializeRoutes() {
+	app.Router.HandleFunc("/", indexHandler).Methods("GET")
+	app.Router.HandleFunc("/hello", helloHandler).Methods("GET")
 	app.Router.HandleFunc("/users", app.getUsers).Methods("GET")
 	app.Router.HandleFunc("/users", app.createUser).Methods("POST")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.getUser).Methods("GET")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.updateUser).Methods("PUT")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.deleteUser).Methods("DELETE")
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, nil)
+	log.Println("Log: indexHandler request")
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello Handler") // send data to client side
+
+	// print the parsed form on server side
+	r.ParseForm()                       // parse arguments, e.g. /hello/?url_long=111&url_long=222
+	fmt.Println("path", r.URL.Path)     // `/hello/`
+	fmt.Println("scheme", r.URL.Scheme) // scheme
+	fmt.Println("method", r.Method)     // method GET
+	fmt.Println(r.Form["url_long"])     // [111 222]
+	for k, v := range r.Form {
+		fmt.Println("key:", k)                    // key: url_long
+		fmt.Println("val:", strings.Join(v, " ")) // val: 111 222
+	}
+	log.Println("Log: helloHandler request")
 }
 
 func (app *App) getUsers(w http.ResponseWriter, r *http.Request) {
