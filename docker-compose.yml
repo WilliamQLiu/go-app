@@ -33,4 +33,7 @@ services:
             - /var/lib/postgresql
         ports:
             - "5432:5432"
-
+        environment:
+            dbUsername: postgres
+            dbPassword: postgres
+            dbName: postgres

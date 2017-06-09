@@ -9,21 +9,34 @@ import (
 	//"net/http"
 
 	_ "github.com/lib/pq"
-	//"os"
+	"os"
 	//"strings"
 	//"github.com/pressly/chi"
 )
 
-const (
-	dbUsername = "postgres" // lowerCamelCase for private const variables
-	dbPassword = "postgres"
-	dbName     = "postgres"
-)
+//const (
+//	dbUsername = "postgres" // lowerCamelCase for private const variables
+//	dbPassword = "postgres"
+//	dbName     = "postgres"
+//)
+
+// getEnv : helper func to get a 'key', if none then returns 'fallback' string
+func getEnv(key, fallback string) string {
+	value, present := os.LookupEnv(key)
+	if !present {
+		return fallback
+	}
+	return value
+}
 
 func main() {
 	log.Println("Log: main starting to initialize app") // Log statements appear on Docker
 
 	app := App{}
+
+	dbUsername := getEnv("dbUsername", "postgres")
+	dbPassword := getEnv("dbPassword", "postgres")
+	dbName := getEnv("dbPassword", "postgres")
 	app.Initialize(dbUsername, dbPassword, dbName)
 	log.Println("Log: App initialized")
 
