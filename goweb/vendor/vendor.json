@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "6PQFibmHgsXFHoRQPmkw2V+59Lk=",
+			"path": "github.com/gorilla/mux",
+			"revision": "18fca31550181693b3a834a15b74b564b3605876",
+			"revisionTime": "2017-05-30T19:55:47Z"
+		},
+		{
+			"checksumSHA1": "Wh2YCiWY/VIAEEQGLS7sMB9isXk=",
+			"path": "github.com/lib/pq",
+			"revision": "8837942c3e09574accbc5f150e2c5e057189cace",
+			"revisionTime": "2017-06-03T22:54:54Z"
+		},
+		{
+			"checksumSHA1": "Gk3jTNQ5uGDUE0WMJFWcYz9PMps=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "8837942c3e09574accbc5f150e2c5e057189cace",
+			"revisionTime": "2017-06-03T22:54:54Z"
+		}
+	],
+	"rootPath": "github.com/williamqliu/go-app/goweb"
+}
