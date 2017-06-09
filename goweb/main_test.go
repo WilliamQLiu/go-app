@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
 
 	"github.com/williamqliu/go-app/goweb"
@@ -31,9 +30,13 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+// tableCreationQuery :
+//   id - serial : auto incrementing primary key
+//   emailaddress - varchar : required string
+//   password - varchar : required string
 const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
 (
-	id INTEGER PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	emailaddress varchar(254) NOT NULL,
 	password varchar(254) NOT NULL
 )`
@@ -46,7 +49,7 @@ func ensureTableExists() {
 
 func clearTable() {
 	app.DB.Exec("DELETE FROM users")
-	//app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
+	app.DB.Exec("ALTER SEQUENCE users_id_seq RESTART WITH 1")
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
@@ -124,7 +127,7 @@ func addUser(count int) {
 	}
 
 	for i := 0; i < count; i++ {
-		app.DB.Exec("INSERT INTO users(id, emailaddress, password) VALUES($1, $2, $3)", strconv.Itoa(i), "testuser@williamqliu.com", "test12345")
+		app.DB.Exec("INSERT INTO users(emailaddress, password) VALUES($1, $2)", "testuser@williamqliu.com", "test12345")
 	}
 }
 
