@@ -29,14 +29,18 @@ func (app *App) Initialize(user, password, dbname string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	app.Router = mux.NewRouter()
 	app.initializeRoutes()
+
 }
 
 // Run : func to start the main application at specifc port
 func (app *App) Run(addr string) {
-	log.Fatal(http.ListenAndServe(addr, app.Router))
+	//log.Fatal(http.ListenAndServe(":8080", app.Router))
+	err := http.ListenAndServe(":8080", app.Router)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // initializeRoutes : func to initialize routes
@@ -51,11 +55,18 @@ func (app *App) initializeRoutes() {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("templates/index.html")
-	t.Execute(w, nil)
+	tmpl, err := template.ParseFiles("./templates/index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Log: indexHandler request")
 }
 
+// helloHandler : func to parse form data (e.g. url with '/hello?abcd=12')
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello Handler") // send data to client side
 

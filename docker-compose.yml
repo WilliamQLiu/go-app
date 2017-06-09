@@ -7,7 +7,12 @@ services:
         build:
             context: ./goweb
             dockerfile: ./Dockerfile
-        command: go run /myapp/main.go
+        links:
+            - postgres
+        expose:
+            - "8080"
+        depends_on:
+            - postgres
     nginx:
         restart: always
         build:

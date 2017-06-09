@@ -5,9 +5,9 @@ FROM golang:1.8
 ADD . /go/src/github.com/williamqliu/go-app/goweb
 RUN mkdir /go-app
 WORKDIR /go-app
+COPY ./templates /go-app/templates
 RUN go build -o main github.com/williamqliu/go-app/goweb 
 ENTRYPOINT ["/go-app/main"]
 
 # Document that the service listens on port 8080.
 EXPOSE 8080
-

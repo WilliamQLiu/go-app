@@ -21,10 +21,12 @@ const (
 )
 
 func main() {
-	log.Println("Log: main app is running")
+	log.Println("Log: main starting to initialize app") // Log statements appear on Docker
 
 	app := App{}
 	app.Initialize(dbUsername, dbPassword, dbName)
+	log.Println("Log: App initialized")
+
 	app.Run(":8080")
 
 	// Setup DB
