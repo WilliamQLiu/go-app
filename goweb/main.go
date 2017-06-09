@@ -37,7 +37,8 @@ func main() {
 	dbUsername := getEnv("dbUsername", "postgres")
 	dbPassword := getEnv("dbPassword", "postgres")
 	dbName := getEnv("dbPassword", "postgres")
-	app.Initialize(dbUsername, dbPassword, dbName)
+	dbhostName := getEnv("hostName", "postgres") // alias created for db from docker-compose
+	app.Initialize(dbUsername, dbPassword, dbName, dbhostName)
 	log.Println("Log: App initialized")
 
 	app.Run(":8080")
