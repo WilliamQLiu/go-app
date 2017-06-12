@@ -17,9 +17,10 @@ var app main.App
 func TestMain(m *testing.M) {
 	app = main.App{}
 	app.Initialize(
-		"postgres", // dbUsername
-		"postgres", // dbPassword
-		"postgres") // dbName
+		"postgres",        // dbUsername
+		"postgres",        // dbPassword
+		"postgres",        // dbName
+		"http://postgres") // dbHostName
 
 	ensureTableExists()
 

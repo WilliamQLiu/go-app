@@ -12,3 +12,10 @@ func GetKey(key, fallback string) string {
 	}
 	return value
 }
+
+// CheckErr : helper func to check if an error
+func CheckErr(err error) {
+	if err != nil {
+		panic(err) // panic stops ordinary flow of control and begins panicking (program crashes)
+	}
+}
