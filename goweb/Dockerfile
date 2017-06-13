@@ -3,12 +3,16 @@
 FROM golang:1.8
 
 ADD . /go/src/github.com/williamqliu/go-app/goweb
-RUN mkdir /go-app
-WORKDIR /go-app
-COPY ./vendor/github.com/williamqliu/go-app/goweb/view /go-app/view
-COPY ./vendor/github.com/williamqliu/go-app/goweb/static /go-app/static
-RUN go build -o main github.com/williamqliu/go-app/goweb 
-ENTRYPOINT ["/go-app/main"]
+#RUN mkdir /go-app
+#WORKDIR /go-app
+#COPY ./vendor/github.com/williamqliu/go-app/goweb/view /go-app/view
+#COPY ./vendor/github.com/williamqliu/go-app/goweb/static /go-app/static
+#RUN go build -o main github.com/williamqliu/go-app/goweb 
+#ENTRYPOINT ["/go-app/main"]
+
+WORKDIR /go/src/github.com/williamqliu/go-app/goweb
+RUN go build -o main github.com/williamqliu/go-app/goweb
+ENTRYPOINT ["/go/src/github.com/williamqliu/go-app/goweb/main"]
 
 # Document that the service listens on port 8080.
 EXPOSE 8080

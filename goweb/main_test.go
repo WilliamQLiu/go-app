@@ -190,3 +190,10 @@ func TestStaticFileServes(t *testing.T) {
 
 	checkResponseCode(t, http.StatusOK, response.Code)
 }
+
+func TestIndexHandler(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+}
