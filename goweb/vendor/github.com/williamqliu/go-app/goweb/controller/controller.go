@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -52,6 +53,12 @@ func (app *App) InitializeRoutes() {
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.getUser).Methods("GET")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.updateUser).Methods("PUT")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.deleteUser).Methods("DELETE")
+
+	// Serve Static Files through web server instead of reverse-proxy
+	var dir string
+	flag.StringVar(&dir, "dir", "./static", "the directory to serve files from, defaults to current dir") // bind string to flag with key, value, and comment
+	flag.Parse()                                                                                          // call Parse() after flags are defined
+	app.Router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
 }
 
 // Run : func to start the main application at specifc port
