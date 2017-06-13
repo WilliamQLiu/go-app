@@ -64,8 +64,7 @@ func (app *App) InitializeRoutes() {
 
 // Run : func to start the main application at specifc port
 func (app *App) Run(addr string) {
-	//log.Fatal(http.ListenAndServe(":8080", app.Router))
-	err := http.ListenAndServe(":8080", app.Router)
+	err := http.ListenAndServe(addr, app.Router)
 	if err != nil {
 		log.Fatal(err)
 	}
