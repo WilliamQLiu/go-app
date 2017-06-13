@@ -4,14 +4,14 @@ package main
 
 import (
 	"log"
-	"os"
 
 	_ "github.com/lib/pq"
 
-	"app/controller"
-	"app/util"
+	"github.com/williamqliu/go-app/goweb/controller"
+	"github.com/williamqliu/go-app/goweb/util"
 )
 
+// main loads configuration settings, registers database, and runs the server
 func main() {
 	log.Println("Log: main starting to initialize app") // Log statements appear on Docker
 
@@ -20,8 +20,10 @@ func main() {
 	dbName := util.GetKey("dbPassword", "postgres")
 	dbhostName := util.GetKey("hostName", "postgres") // alias created for db from docker-compose
 
-	app := App{}
-	app.Initialize(dbUsername, dbPassword, dbName, dbhostName)
-	log.Println("Log: App initialized")
+	app := controller.App{}
+	app.InitializeDB(dbUsername, dbPassword, dbName, dbhostName)
+	app.InitializeTables()
+	app.InitializeRoutes()
+	log.Println("Log: App initialized!")
 	app.Run(":8080")
 }

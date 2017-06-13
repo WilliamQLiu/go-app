@@ -5,7 +5,7 @@ FROM golang:1.8
 ADD . /go/src/github.com/williamqliu/go-app/goweb
 RUN mkdir /go-app
 WORKDIR /go-app
-COPY ./templates /go-app/templates
+COPY ./vendor/github.com/williamqliu/go-app/goweb/view /go-app/view
 RUN go build -o main github.com/williamqliu/go-app/goweb 
 ENTRYPOINT ["/go-app/main"]
 

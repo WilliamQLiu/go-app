@@ -9,41 +9,29 @@ import (
 	"os"
 	"testing"
 
-	"github.com/williamqliu/go-app/goweb"
+	"github.com/williamqliu/go-app/goweb/controller"
+	"github.com/williamqliu/go-app/goweb/model"
 )
 
-var app main.App
+var app controller.App
 
 func TestMain(m *testing.M) {
-	app = main.App{}
-	app.Initialize(
-		"postgres",        // dbUsername
-		"postgres",        // dbPassword
-		"postgres",        // dbName
-		"http://postgres") // dbHostName
-
+	app = controller.App{}
+	app.InitializeDB(
+		"postgres", // dbUsername
+		"postgres", // dbPassword
+		"postgres", // dbName
+		"")         // dbHostName
+	app.InitializeRoutes()
 	ensureTableExists()
-
 	code := m.Run() // Tests are executed with this
-
 	clearTable()
-
 	os.Exit(code)
 }
 
-// tableCreationQuery :
-//   id - serial : auto incrementing primary key
-//   emailaddress - varchar : required string
-//   password - varchar : required string
-const tableCreationQuery = `CREATE TABLE IF NOT EXISTS users
-(
-	id SERIAL PRIMARY KEY,
-	emailaddress varchar(254) NOT NULL,
-	password varchar(254) NOT NULL
-)`
-
 func ensureTableExists() {
-	if _, err := app.DB.Exec(tableCreationQuery); err != nil {
+	log.Println("Ensuring that Table exists")
+	if _, err := app.DB.Exec(model.UserTableCreationQuery); err != nil {
 		log.Fatal(err)
 	}
 }
