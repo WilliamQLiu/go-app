@@ -1,13 +1,14 @@
 package controller_test
 
 import (
-	"github.com/williamqliu/go-app/goweb/controller"
-	"github.com/williamqliu/go-app/goweb/model"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/williamqliu/go-app/goweb/controller"
+	"github.com/williamqliu/go-app/goweb/model"
 )
 
 var app controller.App

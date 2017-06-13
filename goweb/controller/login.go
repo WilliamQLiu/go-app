@@ -16,7 +16,6 @@ import (
 
 // getLoginTemplate : display template for login
 func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
-	log.Println("At getLoginTemplate")
 	start := 0
 	count := 5
 
