@@ -2,6 +2,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 )
@@ -34,4 +35,11 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+
+// GetCWD : get and display the current working directory
+func GetCWD() {
+	cwd, _ := os.Getwd()
+	fmt.Println(cwd)
+
 }
