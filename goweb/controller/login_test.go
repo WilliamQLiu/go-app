@@ -9,6 +9,7 @@ import (
 
 	"github.com/williamqliu/go-app/goweb/controller"
 	"github.com/williamqliu/go-app/goweb/model"
+	"github.com/williamqliu/go-app/goweb/util"
 )
 
 var app controller.App
@@ -43,15 +44,7 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	// Executes the request using the application's router and returns response
 	responseRecorder := httptest.NewRecorder()
 	app.Router.ServeHTTP(responseRecorder, req)
-
 	return responseRecorder
-}
-
-func checkResponseCode(t *testing.T, expected, actual int) {
-	// Compares response code
-	if expected != actual {
-		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
-	}
 }
 
 func TestLoginTemplate(t *testing.T) {
@@ -62,5 +55,5 @@ func TestLoginTemplate(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/login", nil)
 	response := executeRequest(req)
 
-	checkResponseCode(t, http.StatusOK, response.Code)
+	util.CheckResponseCode(t, http.StatusOK, response.Code)
 }
