@@ -183,3 +183,10 @@ func TestDeleteUser(t *testing.T) {
 	response = executeRequest(req)
 	checkResponseCode(t, http.StatusNotFound, response.Code)
 }
+
+func TestStaticFileServes(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/static/", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+}
