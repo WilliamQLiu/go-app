@@ -3,7 +3,12 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -12,8 +17,36 @@ import (
 	"github.com/williamqliu/go-app/goweb/util"
 )
 
+// getLoginTemplate : display template for login
+func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
+	log.Println("At getLoginTemplate")
+	start := 0
+	count := 5
+
+	users, err := model.GetUsers(app.DB, start, count)
+
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(dir)
+	log.Println(dir)
+
+	tmpl, err := template.ParseFiles("./view/login.gtpl")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// send list of users to template
+	err = tmpl.Execute(w, users)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// getUsers : get list of users with JSON response
 func (app *App) getUsers(w http.ResponseWriter, r *http.Request) {
-	// Get a list of Users
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -29,10 +62,10 @@ func (app *App) getUsers(w http.ResponseWriter, r *http.Request) {
 		util.RespondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-
 	util.RespondWithJSON(w, http.StatusOK, users)
 }
 
+// getUser : get a single existing user with JSON response
 func (app *App) getUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -54,6 +87,7 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request) {
 	util.RespondWithJSON(w, http.StatusOK, u)
 }
 
+// createUser : create a new user with JSON response
 func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 	var u model.User
 	decoder := json.NewDecoder(r.Body)
@@ -71,6 +105,7 @@ func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 	util.RespondWithJSON(w, http.StatusCreated, u)
 }
 
+// updateUser : update an existing user with JSON response
 func (app *App) updateUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -96,6 +131,7 @@ func (app *App) updateUser(w http.ResponseWriter, r *http.Request) {
 	util.RespondWithJSON(w, http.StatusOK, u)
 }
 
+// deleteUser : deletes a user with JSON response
 func (app *App) deleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])

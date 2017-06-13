@@ -48,6 +48,7 @@ func (app *App) InitializeRoutes() {
 	app.Router = mux.NewRouter()
 	app.Router.HandleFunc("/", indexHandler).Methods("GET")
 	app.Router.HandleFunc("/hello", helloHandler).Methods("GET")
+	app.Router.HandleFunc("/login", app.getLoginTemplate).Methods("GET")
 	app.Router.HandleFunc("/users", app.getUsers).Methods("GET")
 	app.Router.HandleFunc("/users", app.createUser).Methods("POST")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", app.getUser).Methods("GET")
