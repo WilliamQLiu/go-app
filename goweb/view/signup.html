@@ -1,21 +1,16 @@
-{{define "loginPage"}}
+{{define "signupPage"}}
 {{template "header"}}
 {{template "account"}}
-<form action="/login" method="post">
+<form action="/users" method="post">
     <fieldset>
         <label for="username">Username</label>
         <input type="text" name="username">
         <label for="password">Password</label>
         <input type="password" name="password">
         <input type="hidden" name="token" value="{{.}}">
-        <input class="button-primary" type="submit" value="Login">
+        <input class="button-primary" type="submit" value="Create Account">
     </fieldset>
 </form>
-
-<p>Current List of Users are:</p>
-{{range .}}
-    <li>{{.Emailaddress}}</li>
-{{end}}
 
 {{template "footer"}}
 {{end}}

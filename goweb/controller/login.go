@@ -13,7 +13,7 @@ import (
 	"github.com/williamqliu/go-app/goweb/util"
 )
 
-// getLoginTemplate : display template for login
+// getLoginTemplate : display template for login existing user
 func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
 	start := 0
 	count := 5
@@ -21,6 +21,14 @@ func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
 	users, err := model.GetUsers(app.DB, start, count)
 
 	err = templates.ExecuteTemplate(w, "loginPage", users)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// getSignUpTemplate : display template for signing up new user
+func (app *App) getSignupTemplate(w http.ResponseWriter, r *http.Request) {
+	err := templates.ExecuteTemplate(w, "signupPage", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
