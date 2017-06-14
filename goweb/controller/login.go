@@ -1,11 +1,16 @@
 package controller
 
 import (
+	"crypto/md5"
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -28,7 +33,13 @@ func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
 
 // getSignUpTemplate : display template for signing up new user
 func (app *App) getSignupTemplate(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "signupPage", nil)
+	// Create Token each visit
+	crutime := time.Now().Unix()
+	hash := md5.New()
+	io.WriteString(hash, strconv.FormatInt(crutime, 10)) // base 10
+	token := fmt.Sprintf("%x", hash.Sum(nil))
+
+	err := templates.ExecuteTemplate(w, "signupPage", token)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,6 +90,27 @@ func (app *App) getUser(w http.ResponseWriter, r *http.Request) {
 // createUser : create a new user with JSON response
 func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 	var u model.User
+
+	// Parse Data
+	r.ParseForm()
+	token := r.Form.Get("token")
+	var username = template.HTMLEscapeString(r.Form.Get("username"))
+	var password = template.HTMLEscapeString(r.Form.Get("password"))
+
+	if len(username) == 0 || len(password) == 0 {
+		log.Println("No username or password given")
+	}
+
+	// Check token validity
+	if token != "" {
+		log.Println("Token is: " + token)
+	} else {
+		log.Println("No Token")
+	}
+
+	log.Println("username is: ", username)
+	log.Println("password is: ", password)
+
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
 		util.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
