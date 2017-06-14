@@ -94,11 +94,11 @@ func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 	// Parse Data
 	r.ParseForm()
 	token := r.Form.Get("token")
-	var username = template.HTMLEscapeString(r.Form.Get("username"))
+	var emailaddress = template.HTMLEscapeString(r.Form.Get("emailaddress"))
 	var password = template.HTMLEscapeString(r.Form.Get("password"))
 
-	if len(username) == 0 || len(password) == 0 {
-		log.Println("No username or password given")
+	if len(emailaddress) == 0 || len(password) == 0 {
+		log.Println("No emailaddress or password given")
 	}
 
 	// Check token validity
@@ -108,16 +108,19 @@ func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 		log.Println("No Token")
 	}
 
-	log.Println("username is: ", username)
+	log.Println("emailaddress is: ", emailaddress)
 	log.Println("password is: ", password)
 
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&u); err != nil {
-		errorMessage := "Invalid request payload: " + err.Error() // err.Error() gets string representation
-		util.RespondWithError(w, http.StatusBadRequest, errorMessage)
-		return
-	}
-	defer r.Body.Close()
+	u.Emailaddress = emailaddress
+	u.Password = password
+
+	//decoder := json.NewDecoder(r.Body)
+	//if err := decoder.Decode(&u); err != nil {
+	//	errorMessage := "Invalid request payload: " + err.Error() // err.Error() gets string representation
+	//	util.RespondWithError(w, http.StatusBadRequest, errorMessage)
+	//	return
+	//}
+	//defer r.Body.Close()
 
 	if err := u.CreateUser(app.DB); err != nil {
 		util.RespondWithError(w, http.StatusInternalServerError, err.Error())

@@ -3,8 +3,8 @@
 {{template "account"}}
 <form action="/users" method="post" style="margin: auto; max-width: 300px;">
     <fieldset>
-        <label for="username">Username</label>
-        <input type="text" name="username">
+        <label for="emailaddress">Email Address</label>
+        <input type="email" name="emailaddress">
         <label for="password">Password</label>
         <input type="password" name="password">
         <input type="hidden" name="token" value="{{.}}">
