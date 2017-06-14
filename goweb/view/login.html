@@ -1,0 +1,20 @@
+{{define "loginPage"}}
+{{template "header"}}
+<form action="/login" method="post">
+    <fieldset>
+        <label for="username">Username</label>
+        <input type="text" name="username">
+        <label for="password">Password</label>
+        <input type="password" name="password">
+        <input type="hidden" name="token" value="{{.}}">
+        <input class="button-primary" type="submit" value="Login">
+    </fieldset>
+</form>
+
+<p>Current List of Users are:</p>
+{{range .}}
+    <li>{{.Emailaddress}}</li>
+{{end}}
+
+{{template "footer"}}
+{{end}}

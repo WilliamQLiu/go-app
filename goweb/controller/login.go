@@ -3,7 +3,6 @@ package controller
 import (
 	"database/sql"
 	"encoding/json"
-	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -21,13 +20,7 @@ func (app *App) getLoginTemplate(w http.ResponseWriter, r *http.Request) {
 
 	users, err := model.GetUsers(app.DB, start, count)
 
-	tmpl, err := template.ParseFiles("./view/login.gtpl")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// send list of users to template
-	err = tmpl.Execute(w, users)
+	err = templates.ExecuteTemplate(w, "loginPage", users)
 	if err != nil {
 		log.Fatal(err)
 	}
