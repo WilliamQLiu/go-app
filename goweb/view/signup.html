@@ -1,14 +1,14 @@
 {{define "signupPage"}}
 {{template "header"}}
 {{template "account"}}
-<form action="/users" method="post">
+<form action="/users" method="post" style="margin: auto; max-width: 300px;>
     <fieldset>
         <label for="username">Username</label>
         <input type="text" name="username">
         <label for="password">Password</label>
         <input type="password" name="password">
         <input type="hidden" name="token" value="{{.}}">
-        <input class="button-primary" type="submit" value="Create Account">
+        <input class="button-primary" type="submit" value="Create Account" style="width: 100%">
     </fieldset>
 </form>
 
