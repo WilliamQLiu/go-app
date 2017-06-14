@@ -113,7 +113,8 @@ func (app *App) createUser(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
-		util.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		errorMessage := "Invalid request payload: " + err.Error() // err.Error() gets string representation
+		util.RespondWithError(w, http.StatusBadRequest, errorMessage)
 		return
 	}
 	defer r.Body.Close()
