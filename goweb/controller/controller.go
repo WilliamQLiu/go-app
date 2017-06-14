@@ -20,6 +20,10 @@ type App struct {
 	DB     *sql.DB
 }
 
+// Parse and cache all templates
+// template.Must checks for parsing errors
+var templates = template.Must(template.ParseGlob("./view/*"))
+
 // InitializeDB : connect to database
 func (app *App) InitializeDB(user, password, dbname, dbhostname string) {
 	connectionString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", user, password, dbname)
@@ -71,11 +75,10 @@ func (app *App) Run(addr string) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("./view/index.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = tmpl.Execute(w, nil)
+	// template.Must checks for parsing errors
+	//tmpl, err := template.ParseFiles("./view/index.html")
+	//tmpl = template.Must(template.ParseFiles("./view/content.tmpl", "./view/header.tmpl", "./view/footer.tmpl"))
+	err := templates.ExecuteTemplate(w, "indexPage", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
