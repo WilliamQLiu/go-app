@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 )
 
 // GetKey : helper func to get a 'key', if none then returns 'fallback' string
@@ -41,5 +42,9 @@ func RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 func GetCWD() {
 	cwd, _ := os.Getwd()
 	fmt.Println(cwd)
+}
 
+// GetType : get the type of the object (similar to Python typeof) with reflection
+func GetType(obj interface{}) string {
+	return reflect.TypeOf(obj).String()
 }
